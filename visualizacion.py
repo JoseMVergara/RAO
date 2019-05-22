@@ -16,11 +16,20 @@ class Visualizacion(object):
     '''
     def __init__(self):
         self.contador = 0
+        self.test = 0
         
-    def crearVentana(self,ventana,titulo):
+    def crearVentana(self,titulo):
+        ventana = tk.Tk()
         ventana.title(titulo)
         ventana.geometry("1366x768+0+0")
         ventana.config(bg="#641403")
+        return ventana
+                    
+                       
+    def destruirVentana(self,ventana):
+        if ventana:
+            ventana.destroy()
+            return ventana
                        
     def agregarImagenFondo(self,ventana,nombreImagen):
         imagen = Image.open(nombreImagen)
@@ -41,48 +50,54 @@ class Visualizacion(object):
     
     def nivelSuperado(self):
         self.ventanaSuperada.destroy()
-        ventanaNivelSuperado = tk.Tk()
-        self.crearVentana(ventanaNivelSuperado,'Nivel Superado')
+        ventanaNivelSuperado = self.crearVentana('Nivel Superado')
         canvas,ancho,largo=self.agregarImagenFondo(ventanaNivelSuperado,
                                                    self.imagen)
-        boton = self.crearBoton(ventanaNivelSuperado,"Siguiente Nivel",self.ventanaSiguienteNivel)
+        boton = self.crearBoton(ventanaNivelSuperado,"Siguiente Nivel",
+                                self.ventanaSiguienteNivel)
         botonVentana = canvas.create_window(ancho/2-500,largo-150,
                                             anchor='center',window=boton) 
         
     def opcionIncorrecta(self):
-        print("Hola")
         self.contador += 1
         if self.contador > self.nivel:
-            msj.showerror("Fin del juego", "Te has quedado sin vidas",icon='error')
+            intentosRestantes = 0
+            if self.test == 0:
+                msj.showerror("Fin del juego", "Te has quedado sin vidas",icon='error')
         else:
-            intentosRestantes = self.nivel - self.contador
-            msj.showerror("Has perdido una vida",
-            "Te quedan %s intentos para este nivel"%intentosRestantes,icon='warning')
+            intentosRestantes = self.nivel - self.contador + 1
+            if self.test == 0:
+                msj.showerror("Has perdido una vida",
+                              "Te quedan %s intentos para este nivel"%str(intentosRestantes),
+                              icon='warning')
+        return intentosRestantes
         
     def ventanaPrincipal(self):
-        self.ventanaInicial = tk.Tk()
-        self.crearVentana(self.ventanaInicial,'Rumbo Al Olimpo')
-        canvas,ancho,largo=self.agregarImagenFondo(self.ventanaInicial,"./images/VentanaPrincipal.ppm")
+        self.ventanaInicial = self.crearVentana('Rumbo Al Olimpo')
+        canvas,ancho,largo=self.agregarImagenFondo(self.ventanaInicial,
+                                                   "./images/VentanaPrincipal.ppm")
         boton = self.crearBoton(self.ventanaInicial,"Siguiente",self.ventanaIntro)
         botonVentana = canvas.create_window(ancho/2,largo-150,anchor='center',window=boton) 
         
         return self.ventanaInicial
 
     def ventanaIntro(self):
-        self.ventanaInicial.destroy()
-        self.ventanaIntroduccion = tk.Tk() 
-        self.crearVentana(self.ventanaIntroduccion,'Introducción')
-        canvas,ancho,largo=self.agregarImagenFondo(self.ventanaIntroduccion,"./images/VentanaIntro.ppm")
-        boton = self.crearBoton(self.ventanaIntroduccion,"Iniciar Juego",self.ventanaPrimerNivel)
-        botonVentana = canvas.create_window(ancho/2,largo-100,anchor='center',window=boton)
+        self.destruirVentana(self.ventanaInicial)
+        self.ventanaIntroduccion = self.crearVentana('Introducción')
+        canvas,ancho,largo=self.agregarImagenFondo(self.ventanaIntroduccion,
+                                                   "./images/VentanaIntro.ppm")
+        boton = self.crearBoton(self.ventanaIntroduccion,"Iniciar Juego",
+                                self.ventanaPrimerNivel)
+        botonVentana = canvas.create_window(ancho/2,largo-100,anchor='center',
+                                            window=boton)
         
 
     def ventanaPrimerNivel(self):
-        self.ventanaIntroduccion.destroy()
-        self.primerNivel = tk.Tk()
-        self.crearVentana(self.primerNivel,'Nivel 1')
+        self.destruirVentana(self.ventanaIntroduccion)
+        self.primerNivel = self.crearVentana('Nivel 1')
         self.nivel = 1
-        canvas,ancho,largo=self.agregarImagenFondo(self.primerNivel,"./images/ventanaPrimerNivel.ppm")
+        canvas,ancho,largo=self.agregarImagenFondo(self.primerNivel,
+                                                   "./images/ventanaPrimerNivel.ppm")
         
         primeraOpcion = self.crearBoton(self.primerNivel,"V",self.opcionIncorrecta)
         primeraOpcionVentana = canvas.create_window(ancho/4-130,largo-100,
@@ -102,7 +117,11 @@ class Visualizacion(object):
         cuartaOpcion = self.crearBoton(self.primerNivel,"X",self.nivelSuperado)
         cuartaOpcionVentana = canvas.create_window(ancho-220,largo-100,
                                         anchor='center',window=cuartaOpcion)
+        self.opcionCorrecta = cuartaOpcion
+        
     def ventanaSegundoNivel(self):
+        self.contador = 0
+        
         pass
         
 

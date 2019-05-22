@@ -82,11 +82,56 @@ class testRAO(unittest.TestCase):
             raise AssertionError("La clase visualizacion no está definida")
         return True
     
+    def test_crearVentana(self):
+        app=vis.Visualizacion()
+        ventana=app.crearVentana('test_ventana')
+        self.assertIsInstance(ventana,tk.Tk)
+        
+    def test_crearBoton(self):
+        app=vis.Visualizacion()
+        ventana=app.crearVentana('test_boton')
+        boton=app.crearBoton(ventana,'test_boton',None)
+        self.assertIsInstance(boton,tk.Button)
+        
+    def test_destruirVentana(self):
+        app=vis.Visualizacion()
+        ventana=app.crearVentana('test_destruirVentana')
+        ventana = app.destruirVentana(ventana)
+        try:
+            ventana.attributes()
+            verificador = True
+        except:
+            verificador = False
+        self.assertFalse(verificador)
+        
+    def test_agregarImagenFondo(self):
+        app=vis.Visualizacion()
+        ventana = app.crearVentana('test_agregarImagenFondo')
+        canvas,ancho,largo = app.agregarImagenFondo(ventana,"./images/VentanaPrincipal.ppm")
+        self.assertIsInstance(canvas,tk.Canvas)
+        
+    def test_opcionIncorrectaVidaMenos(self):
+        app = vis.Visualizacion()
+        app.contador = 0
+        app.nivel = 3
+        app.test = 1
+        intentosRestantes = app.opcionIncorrecta()
+        self.assertEqual(intentosRestantes,3)
+        
+    def test_opcionIncorrectaSinVidas(self):
+        app = vis.Visualizacion()
+        app.contador = 3
+        app.nivel = 3
+        app.test = 1 
+        intentosRestantes = app.opcionIncorrecta()
+        self.assertEqual(intentosRestantes,0)
+        
+    
         
         
-    
-    
-    
+        
+        
+        
         
 if __name__=="__main__":
     unittest.main()
