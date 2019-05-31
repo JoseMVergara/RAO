@@ -438,7 +438,9 @@ class Visualizacion(object):
         return self.comprar
         
 
-        
+if __name__=="__main__":
+    App = Visualizacion()
+    App.ventanaPrincipal().mainloop()   
         
         
                        
