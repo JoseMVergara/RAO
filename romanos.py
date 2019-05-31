@@ -10,8 +10,10 @@ import re
 class Romano(object):
     
     """
-    0 a 4000
+    Clase Romano
     
+    Convierte números romanos entre 0  y 4000 a números arábigos.
+    Entradas: número romano
     """
 
     def __init__(self,numeroRomano):
